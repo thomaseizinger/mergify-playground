@@ -4,14 +4,18 @@ defaults:
       method: squash
       commit_message_template: |
         {%- set commit_msg = body | get_section("## Description", "") -%}
-        {%- set last_line_is_trailer = commit_msg.split("\n")[-2] | replace(": ", ":IDENTIFIER:") -%}
-        {%- set trailer_prefix = "" -%}
-        {%- if "IDENTIFIER" not in last_line_is_trailer -%}
-            {%- set trailer_prefix = "\n" -%}
+        {%- set lines = commit_msg.split("\n") -%}
+        {%- set trailer_prefix = "\n" -%}  {# Default to newline #}
+        {%- set trailer_test = "" -%}
+        {%- if lines|length >= 2 -%}
+            {%- set trailer_test = lines[-2] | replace(": ", ":IDENTIFIER:") -%}
+            {%- if "IDENTIFIER" in trailer_test -%}
+                {%- set trailer_prefix = "" -%}
+            {%- endif -%}
         {%- endif -%}
         {{ title }}
 
-        {{ body }}{{ trailer_prefix }}Pull-Request: #{{ number }}.
+        {{ commit_msg }}{{ trailer_prefix }}Pull-Request: #{{ number }}.
 
 queue_rules:
   - name: default
