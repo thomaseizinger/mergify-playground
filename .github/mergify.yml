@@ -1,0 +1,18 @@
+defaults:
+  actions:
+    queue:
+      method: squash
+      commit_message_template: |
+        {%- set commit_msg = body | get_section("## Description", "") -%}
+        {%- set last_line_is_trailer = commit_msg.split("\n")[-2] | replace(": ", ":IDENTIFIER:") -%}
+        {%- set trailer_prefix = "" -%}
+        {%- if "IDENTIFIER" not in last_line_is_trailer -%}
+            {%- set trailer_prefix = "\n" -%}
+        {%- endif -%}
+        {{ title }}
+
+        {{ body }}{{ trailer_prefix }}Pull-Request: #{{ number }}.
+
+queue_rules:
+  - name: default
+    conditions: []
