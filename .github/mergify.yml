@@ -7,8 +7,8 @@ defaults:
         {%- set lines = commit_msg.split("\n") -%}
         {%- set trailer_prefix = "\n" -%}  {# Default to newline #}
         {%- set trailer_test = "" -%}
-        {%- if lines|length >= 2 -%}
-            {%- set trailer_test = lines[-2] | replace(": ", ":IDENTIFIER:") -%}
+        {%- if lines|length >= 1 -%}
+            {%- set trailer_test = lines[-1] | replace(": ", ":IDENTIFIER:") -%}
             {%- if "IDENTIFIER" in trailer_test -%}
                 {%- set trailer_prefix = "" -%}
             {%- endif -%}
